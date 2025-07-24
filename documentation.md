@@ -43,3 +43,19 @@
   - To simplify server management and ensure consistent commands for running the backend in different environments.
 
 ---
+
+## **Main Todo 1.3: Database Setup**
+
+### Sub-todo 1.3.1: MongoDB Atlas Setup
+- **What we did**: Created a MongoDB Atlas cluster, configured network access, created a database user, and added the connection string to `.env`.
+- **Why**: To set up a cloud-hosted database for storing application data securely and reliably.
+
+### Sub-todo 1.3.2: Database Connection Configuration
+- **What we did**: Created `config/database.js` with MongoDB connection logic, added error handling and connection logging, and tested the connection in `server.js`.
+- **Why**: To establish a reliable connection to the database and handle potential errors gracefully.
+
+### Sub-todo 1.3.3: Upstash Redis Setup
+- **What we did**: Created an Upstash Redis database, retrieved the Redis URL and token, and added them to `.env`. Verified the connection in `server.js`.
+- **Why**: To enable rate limiting and caching for improved performance and security.
+
+---
