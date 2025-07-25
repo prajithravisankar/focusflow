@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const { Redis } = require('@upstash/redis');
 const { registerValidation, validate } = require('./utils/validation');
+const { generateAccessToken } = require('./utils/jwt');
+const authMiddleware = require('./middleware/auth');
 
 
 
@@ -22,6 +24,19 @@ const PORT = process.env.PORT || 5050;
 // app.post('/api/test-register', registerValidation, validate, (req, res) => {
 //   res.status(200).json({ message: 'Validation passed!' });
 // });
+
+
+// Route to generate a token (for testing)
+app.post('/api/test-token', (req, res) => {
+  const user = { _id: '12345', email: 'test@example.com' }; // Mock user data
+  const token = generateAccessToken(user);
+  res.status(200).json({ token });
+});
+
+// Protected route to test middleware
+app.get('/api/protected', authMiddleware, (req, res) => {
+  res.status(200).json({ message: 'Access granted', user: req.user });
+});
 
 
 
