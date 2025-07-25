@@ -75,3 +75,19 @@
 - **Why**: To confirm that the `User` model and validation logic work as expected, ensuring data integrity and security.
 
 ---
+
+## **Main Todo 2.2: JWT System Implementation**
+
+### Sub-todo 2.2.1: JWT Utility Functions
+- **What we did**: Created utility functions in `utils/jwt.js` to generate, verify, and decode JSON Web Tokens (JWTs). Token expiration for the hackathon is set to 10 days for now.
+- **Why**: To enable secure user authentication and authorization by generating tokens that can be used to verify user identity.
+
+### Sub-todo 2.2.2: Auth Middleware
+- **What we did**: Implemented middleware in `middleware/auth.js` to extract JWTs from the `Authorization` header, verify the token, and attach decoded user information to the request object.
+- **Why**: To secure protected routes by ensuring only authenticated users with valid tokens can access them.
+
+### Sub-todo 2.2.3: Test JWT System
+- **What we did**: Added test routes in `server.js` to generate tokens and test the middleware. Verified that valid tokens grant access to protected routes, while invalid or missing tokens return a `401 Unauthorized` response.
+- **Why**: To ensure the JWT system works as expected and provides secure access control for protected resources.
+
+---
