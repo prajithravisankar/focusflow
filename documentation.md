@@ -59,3 +59,19 @@
 - **Why**: To enable rate limiting and caching for improved performance and security.
 
 ---
+
+## **Main Todo 2.1: User Model and Validation**
+
+### Sub-todo 2.1.1: Create User Schema (models/User.js)
+- **What we did**: Defined the `User` schema with fields for `firstName`, `lastName`, `email`, `password`, and `createdAt`. Added password hashing middleware using `bcrypt` and implemented a method to compare hashed passwords.
+- **Why**: To securely store user data and enable authentication by hashing passwords and validating user credentials.
+
+### Sub-todo 2.1.2: Input Validation Setup (utils/validation.js)
+- **What we did**: Created validation schemas for registration and login using `express-validator`. Added rules for email format, password strength, and name field requirements.
+- **Why**: To ensure user input is valid and meets the application's requirements before processing.
+
+### Sub-todo 2.1.3: Test User Model
+- **What we did**: Tested the `User` model by creating a test user document in MongoDB, verifying password hashing, and testing validation rules with invalid and valid data.
+- **Why**: To confirm that the `User` model and validation logic work as expected, ensuring data integrity and security.
+
+---
