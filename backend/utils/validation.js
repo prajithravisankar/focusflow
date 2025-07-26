@@ -14,6 +14,13 @@ const loginValidation = [
     check('password').notEmpty().withMessage('password is required'),
 ];
 
+// Task validation rules
+const taskValidation = [
+  check('title').notEmpty.withMessage('Task title is required').isLength({ max: 200 }).withMessage('Task title cannot exceed 200 characters'),
+  check('description').optional().isLength({ max: 1000 }).withMessage('Task description cannot exceed 1000 characters'),
+  check('completed').optional().isBoolean().withMessage('Completed status must be a boolean'),
+];
+
 // middleware to handle validation errors
 const validate = (req, res, next) => {
     const errors = validationResult(req);
@@ -24,5 +31,6 @@ const validate = (req, res, next) => {
 module.exports = {
     registerValidation, 
     loginValidation, 
+    taskValidation, 
     validate,
 };

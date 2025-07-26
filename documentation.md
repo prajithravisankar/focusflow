@@ -111,3 +111,65 @@
 - **Why**: To organize the codebase, improve maintainability, and ensure consistent error handling and response formatting.
 
 ---
+
+## **Main Todo 2.4: Rate Limiting and Security Middleware**
+
+### Sub-todo 2.4.1: Upstash Rate Limiting Setup
+- **What we did**: Configured the Upstash Redis client in `config/upstash.js` and created rate-limiting middleware in `middleware/rateLimit.js`. Applied rate limits for login and registration endpoints:
+  - **Login**: 5 attempts per 15 minutes per IP.
+  - **Register**: 3 attempts per hour per IP.
+- **Why**: To prevent abuse of the login and registration endpoints and enhance security.
+
+### Sub-todo 2.4.2: Security Middleware Setup
+- **What we did**: Added security-related middleware:
+  - **Helmet**: To set secure HTTP headers.
+  - **CORS**: Configured to allow requests from the frontend origin.
+  - **Morgan**: Added request logging for better debugging and monitoring.
+  - **Global Error Handling**: Implemented middleware to handle errors consistently across the application.
+- **Why**: To improve the security and reliability of the backend.
+
+### Sub-todo 2.4.3: Test Rate Limiting
+- **What we did**: Tested the rate-limiting middleware:
+  - Verified login rate limiting by sending multiple requests and confirmed the `429 Too Many Requests` response after exceeding the limit.
+  - Verified registration rate limiting with the same behavior.
+  - Tested CORS configuration to ensure requests from the frontend are allowed.
+- **Why**: To ensure the rate-limiting and security middleware work as expected and protect the application from abuse.
+
+---
+
+## **Main Todo 3.1: Task Model Implementation**
+
+### Sub-todo 3.1.1: Create Task Schema (models/Task.js)
+- **What we did**: Created the `Task` schema in `models/Task.js` with the following fields:
+  - `title`: Required, max length 200.
+  - `description`: Optional, max length 1000.
+  - `completed`: Boolean, defaults to `false`.
+  - `userId`: References the `User` model to associate tasks with users.
+  - `createdAt` and `updatedAt`: Automatically managed by Mongoose.
+- **Why**: To define the structure of tasks in the database and ensure proper association with users.
+- **Additional Features**:
+  - Added an index on `userId` and `createdAt` for efficient querying and sorting.
+
+---
+
+### Sub-todo 3.1.2: Task Validation Rules (utils/validation.js)
+- **What we did**: Added validation rules for tasks in `utils/validation.js`:
+  - **Title**: Required, max length 200.
+  - **Description**: Optional, max length 1000.
+  - **Completed**: Optional, must be a boolean.
+- **Why**: To ensure that only valid data is accepted when creating or updating tasks.
+
+---
+
+### Sub-todo 3.1.3: Test Task Model
+- **What we did**: Created a test script (`testTaskModel.js`) to:
+  - Create a sample user and associate tasks with the user.
+  - Test task creation with valid data.
+  - Query tasks by `userId` to verify ownership and association.
+  - Test validation rules by attempting to create tasks with invalid data.
+- **Why**: To verify that the Task model, user association, and validation rules work as expected.
+- **Results**:
+  - Successfully created valid tasks and associated them with a user.
+  - Validation rules correctly prevented invalid tasks from being created.
+
+---
