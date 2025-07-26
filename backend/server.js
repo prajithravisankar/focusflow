@@ -4,14 +4,21 @@ dotenv.config();
 const express = require('express');
 const connectDB = require('./config/database');
 const { Redis } = require('@upstash/redis');
-const { registerValidation, validate, loginValidation } = require('./utils/validation');
 const { generateAccessToken } = require('./utils/jwt');
-const authMiddleware = require('./middleware/auth');
-const authController = require('./controllers/authController');
 const rateLimit = require('./middleware/rateLimit');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
+
+// validation
+const { registerValidation, validate, loginValidation, taskValidation } = require('./utils/validation');
+
+// controllers
+const authController = require('./controllers/authController');
+const taskController = require('./controllers/taskController');
+
+// authentication
+const authMiddleware = require('./middleware/auth');
 
 const app = express();
 
@@ -60,6 +67,14 @@ app.post('/api/auth/register', registerRateLimit, registerValidation, validate, 
 app.post('/api/auth/login', loginRateLimit, loginValidation, validate ,authController.login);
 
 app.get('/api/auth/profile', authMiddleware, authController.profile);
+
+app.post('/api/tasks', authMiddleware, taskValidation, validate, taskController.createTask);
+
+app.get('/api/tasks', authMiddleware, taskController.getUserTasks);
+
+app.put('/api/tasks/:id', authMiddleware, taskValidation, validate, taskController.updateTask);
+
+app.delete('/api/tasks/:id', authMiddleware, taskController.deleteTask);
 
 
 app.listen(PORT, () => {

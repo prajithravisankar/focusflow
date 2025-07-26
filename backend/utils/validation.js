@@ -16,7 +16,7 @@ const loginValidation = [
 
 // Task validation rules
 const taskValidation = [
-  check('title').notEmpty.withMessage('Task title is required').isLength({ max: 200 }).withMessage('Task title cannot exceed 200 characters'),
+  check('title').notEmpty().withMessage('Task title is required').isLength({ max: 200 }).withMessage('Task title cannot exceed 200 characters'),
   check('description').optional().isLength({ max: 1000 }).withMessage('Task description cannot exceed 1000 characters'),
   check('completed').optional().isBoolean().withMessage('Completed status must be a boolean'),
 ];

@@ -150,7 +150,6 @@
 - **Additional Features**:
   - Added an index on `userId` and `createdAt` for efficient querying and sorting.
 
----
 
 ### Sub-todo 3.1.2: Task Validation Rules (utils/validation.js)
 - **What we did**: Added validation rules for tasks in `utils/validation.js`:
@@ -159,7 +158,6 @@
   - **Completed**: Optional, must be a boolean.
 - **Why**: To ensure that only valid data is accepted when creating or updating tasks.
 
----
 
 ### Sub-todo 3.1.3: Test Task Model
 - **What we did**: Created a test script (`testTaskModel.js`) to:
@@ -171,5 +169,44 @@
 - **Results**:
   - Successfully created valid tasks and associated them with a user.
   - Validation rules correctly prevented invalid tasks from being created.
+
+---
+
+## **Main Todo 3.2: Task Endpoints Implementation**
+
+### Sub-todo 3.2.1: Create Task Endpoint (POST /api/tasks)
+- **What we did**: Implemented the `POST /api/tasks` endpoint to allow users to create tasks.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can create tasks.
+  - Validated task data (e.g., `title` is required).
+  - Associated the task with the authenticated user using the `userId` field.
+  - Returned the created task with a `201 Created` status code.
+- **Why**: To enable users to create tasks and associate them with their accounts.
+
+
+### Sub-todo 3.2.2: Get User Tasks Endpoint (GET /api/tasks)
+- **What we did**: Implemented the `GET /api/tasks` endpoint to fetch tasks belonging to the authenticated user.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can access their tasks.
+  - Queried tasks by the `userId` of the authenticated user.
+  - Added sorting by creation date (newest first).
+  - Included pagination with `page` and `limit` query parameters for large task lists.
+- **Why**: To allow users to view their tasks efficiently, even with large task lists.
+
+
+### Sub-todo 3.2.3: Update Task Endpoint (PUT /api/tasks/:id)
+- **What we did**: Implemented the `PUT /api/tasks/:id` endpoint to allow users to update their tasks.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can update tasks.
+  - Verified task ownership by checking the `userId` field.
+  - Validated update data (e.g., `title`, `description`, and `completed`).
+  - Updated specific fields of the task and returned the updated task with a `200 OK` status code.
+- **Why**: To allow users to modify their tasks while ensuring security and data integrity.
+
+
+### Sub-todo 3.2.4: Delete Task Endpoint (DELETE /api/tasks/:id)
+- **What we did**: Implemented the `DELETE /api/tasks/:id` endpoint to allow users to delete their tasks.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can delete tasks.
+  - Verified task ownership by checking the `userId` field.
+  - Removed the task from the database and returned a success confirmation with a `200 OK` status code.
+  - Handled errors for non-existent tasks or unauthorized access.
+- **Why**: To allow users to delete tasks they no longer need while ensuring security and proper error handling.
 
 ---
