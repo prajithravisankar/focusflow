@@ -91,3 +91,23 @@
 - **Why**: To ensure the JWT system works as expected and provides secure access control for protected resources.
 
 ---
+
+## **Main Todo 2.3: Authentication Endpoints**
+
+### Sub-todo 2.3.1: Registration Endpoint (POST /api/auth/register)
+- **What we did**: Implemented the registration endpoint to validate input data, check if the user already exists, hash the password, create a user document, and return a JWT token along with user data (excluding the password).
+- **Why**: To allow new users to securely register and create accounts in the system.
+
+### Sub-todo 2.3.2: Login Endpoint (POST /api/auth/login)
+- **What we did**: Implemented the login endpoint to validate email and password, verify user credentials, generate a JWT token, and return user data with the token.
+- **Why**: To enable users to securely log in and access their accounts.
+
+### Sub-todo 2.3.3: Profile Endpoint (GET /api/auth/profile)
+- **What we did**: Implemented the profile endpoint to retrieve the current user's information using the token. Protected the route with `authMiddleware` and excluded the password from the response.
+- **Why**: To provide authenticated users with access to their profile information securely.
+
+### Sub-todo 2.3.4: Auth Controller
+- **What we did**: Moved all authentication logic (registration, login, and profile) into `authController.js`. Added proper error handling, consistent response formatting, and logging for authentication attempts.
+- **Why**: To organize the codebase, improve maintainability, and ensure consistent error handling and response formatting.
+
+---
