@@ -210,3 +210,37 @@
 - **Why**: To allow users to delete tasks they no longer need while ensuring security and proper error handling.
 
 ---
+
+## **Main Todo 3.3: Task Controller and Routes Integration**
+
+### Sub-todo 3.3.1: Task Controller (controllers/taskController.js)
+- **What we did**: Implemented all CRUD functions in `taskController.js`:
+  - **Create Task**: Allows authenticated users to create tasks with user association.
+  - **Get User Tasks**: Fetches tasks belonging to the authenticated user, with pagination and sorting by creation date.
+  - **Update Task**: Updates specific fields of a task after verifying ownership.
+  - **Delete Task**: Deletes a task after verifying ownership.
+- **Why**: To centralize task-related logic and ensure proper error handling, validation, and user ownership verification.
+- **Additional Features**:
+  - Added consistent response formatting for all endpoints.
+  - Included proper error handling for invalid requests and unauthorized access.
+
+### Sub-todo 3.3.2: Task Routes Setup (routes/tasks.js)
+- **What we did**: Created `routes/tasks.js` to define all task-related routes:
+  - **POST /api/tasks**: Create a new task.
+  - **GET /api/tasks**: Fetch tasks for the authenticated user.
+  - **PUT /api/tasks/:id**: Update a specific task.
+  - **DELETE /api/tasks/:id**: Delete a specific task.
+- **Why**: To organize task-related routes and connect them to the corresponding controller functions.
+- **Additional Features**:
+  - Applied `authMiddleware` to protect all routes.
+  - Used `taskValidation` and `validate` middleware to ensure input data is valid.
+
+### Sub-todo 3.3.3: Integration with Main Server
+- **What we did**: Integrated task routes into the main server:
+  - Imported and mounted `routes/tasks.js` in `server.js` under the `/api/tasks` path.
+  - Tested all endpoints using Postman/Thunder Client to ensure they work as expected.
+  - Verified that authentication protection works by testing endpoints with and without valid tokens.
+  - Tested error handling for invalid requests (e.g., missing fields, invalid task IDs).
+- **Why**: To ensure task-related functionality is fully integrated into the backend and accessible via the API.
+
+---
