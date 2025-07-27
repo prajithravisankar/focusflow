@@ -1,4 +1,5 @@
 const { check, validationResult } = require('express-validator');
+const Task = require('../models/Task');
 
 const registerValidation = [
     check('firstName').notEmpty().withMessage('first name is required').isLength({ min: 2, max: 50 }).withMessage('first name must be between 2 and 50 characters'), 
@@ -28,9 +29,37 @@ const validate = (req, res, next) => {
     next();
 };
 
+// Session validation rules
+const sessionValidation = [
+  check('sessionType').notEmpty().withMessage('Session type is required').isIn(['focus', 'break']).withMessage('Session type must be either "focus" or "break"'),
+  check('duration').notEmpty().withMessage('Duration is required').isFloat({ gt: 0 }).withMessage('Duration must be a positive number'),
+  check('taskId').optional()
+    .custom(async (value, { req }) => {
+      if (req.body.sessionType === 'focus' && !value) {
+        throw new Error('Task ID is required for focus sessions');
+      }
+      if (value) {
+        const task = await Task.findById(value);
+        if (!task) {
+          throw new Error('Task does not exist');
+        }
+      }
+      return true;
+    }),
+  check('startTime').notEmpty().withMessage('Start time is required').isISO8601().withMessage('Start time must be a valid ISO 8601 date'),
+  check('endTime').notEmpty().withMessage('End time is required').isISO8601().withMessage('End time must be a valid ISO 8601 date')
+    .custom((value, { req }) => {
+      if (new Date(value) <= new Date(req.body.startTime)) {
+        throw new Error('End time must be after start time');
+      }
+      return true;
+    }),
+];
+
 module.exports = {
     registerValidation, 
     loginValidation, 
-    taskValidation, 
+    taskValidation,
+    sessionValidation, 
     validate,
 };

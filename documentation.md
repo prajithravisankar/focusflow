@@ -244,3 +244,44 @@
 - **Why**: To ensure task-related functionality is fully integrated into the backend and accessible via the API.
 
 ---
+
+## **Main Todo 4.1: Session Model Implementation**
+
+### Sub-todo 4.1.1: Create Session Schema (models/Session.js)
+- **What we did**: Created the `Session` schema in `models/Session.js` with the following fields:
+  - `taskId`: References the `Task` model. Required for focus sessions.
+  - `userId`: References the `User` model. Required for all sessions.
+  - `sessionType`: Specifies whether the session is a "focus" or "break". Allowed values are `focus` and `break`.
+  - `duration`: The planned duration of the session (in minutes). Must be a positive number.
+  - `actualDuration`: Tracks how much time was actually spent during the session. Defaults to `0`.
+  - `startTime` and `endTime`: Timestamps for when the session starts and ends. Both are required.
+  - `completed`: Indicates whether the session was completed. Defaults to `false`.
+  - `pausedDuration`: Tracks the total time the session was paused. Defaults to `0`.
+- **Why**: To define the structure of sessions in the database and ensure proper associations with tasks and users.
+- **Additional Features**:
+  - Added validation for session types (`focus` or `break`) and durations (positive numbers).
+  - Ensured `taskId` is required only for focus sessions.
+
+### Sub-todo 4.1.2: Session Validation (utils/validation.js)
+- **What we did**: Added validation rules for sessions in `utils/validation.js`:
+  - **Session Type**: Ensures `sessionType` is either `focus` or `break`.
+  - **Duration**: Ensures `duration` is a positive number.
+  - **Task Validation**: Ensures `taskId` exists in the database for focus sessions.
+  - **Timestamp Validation**:
+    - Ensures `startTime` and `endTime` are valid ISO 8601 dates.
+    - Ensures `endTime` is after `startTime`.
+- **Why**: To ensure that only valid session data is accepted when creating or updating sessions.
+
+### Sub-todo 4.1.3: Test Session Model
+- **What we did**: Created a test script (`testSessionModel.js`) to:
+  - Create a sample user and associate tasks with the user.
+  - Create a session linked to the task and user.
+  - Query sessions by `userId` and populate the `taskId` field with task details.
+  - Test validation rules by attempting to create sessions with invalid data.
+- **Why**: To verify that the Session model, task and user associations, and validation rules work as expected.
+- **Results**:
+  - Successfully created valid sessions and linked them to tasks and users.
+  - Validation rules correctly prevented invalid sessions from being created.
+  - Queried sessions returned the expected results, with task details populated.
+
+---
