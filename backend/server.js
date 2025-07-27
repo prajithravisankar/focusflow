@@ -10,8 +10,9 @@ const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
 
-// task routes
+// routes
 const taskRoutes = require('./routes/tasks');
+const sessionRoutes = require('./routes/sessions');
 
 // validation
 const { registerValidation, validate, loginValidation, taskValidation } = require('./utils/validation');
@@ -80,6 +81,7 @@ app.get('/api/auth/profile', authMiddleware, authController.profile);
 // app.delete('/api/tasks/:id', authMiddleware, taskController.deleteTask);
 
 app.use('/api/tasks', taskRoutes);
+app.use('/api/sessions', sessionRoutes);
 
 
 app.listen(PORT, () => {

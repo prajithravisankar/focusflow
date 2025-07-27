@@ -285,3 +285,39 @@
   - Queried sessions returned the expected results, with task details populated.
 
 ---
+
+## **Main Todo 4.2: Session Endpoints Implementation**
+
+### Sub-todo 4.2.1: Start Session Endpoint (POST /api/sessions/start)
+- **What we did**: Implemented the `POST /api/sessions/start` endpoint to allow users to start a session.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can start sessions.
+  - Validated session data, including `taskId`, `sessionType`, `duration`, `startTime`, and `endTime`.
+  - Created a session record in the database with the provided details.
+  - Returned the session ID to the client for tracking purposes.
+- **Why**: To enable users to initiate focus or break sessions and track their progress.
+
+### Sub-todo 4.2.2: Update Session Endpoint (PUT /api/sessions/:id)
+- **What we did**: Implemented the `PUT /api/sessions/:id` endpoint to allow users to update session details.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can update sessions.
+  - Handled pause/resume functionality by updating the `pausedDuration` field.
+  - Allowed updating the `actualDuration` field to track time spent during the session.
+  - Ensured only the session owner can update the session.
+- **Why**: To allow users to manage their sessions dynamically, including pausing, resuming, and tracking actual time spent.
+
+### Sub-todo 4.2.3: Complete Session Endpoint (POST /api/sessions/:id/complete)
+- **What we did**: Implemented the `POST /api/sessions/:id/complete` endpoint to mark a session as completed.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can complete sessions.
+  - Marked the session as completed and calculated the final `actualDuration`.
+  - Updated the associated task’s `totalTimeSpent` field for focus sessions.
+  - Returned a session summary to the client.
+- **Why**: To finalize sessions and update task statistics, providing users with meaningful insights into their productivity.
+
+### Sub-todo 4.2.4: Get Session History (GET /api/sessions)
+- **What we did**: Implemented the `GET /api/sessions` endpoint to fetch a user’s session history.
+  - Protected the route with `authMiddleware` to ensure only authenticated users can access their session history.
+  - Added filtering options for `taskId`, `sessionType`, and date range (`startDate` and `endDate`).
+  - Included pagination with `page` and `limit` query parameters for large session histories.
+  - Returned aggregated statistics and session details to the client.
+- **Why**: To provide users with a detailed history of their sessions, enabling them to review their focus and break patterns.
+
+---
