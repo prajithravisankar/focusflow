@@ -321,3 +321,39 @@
 - **Why**: To provide users with a detailed history of their sessions, enabling them to review their focus and break patterns.
 
 ---
+
+## **Main Todo 4.3: Analytics and Session Enhancements**
+
+### Sub-todo 4.3.1: Task Time Aggregation
+- **What we did**: Added a method in `Task.js` to calculate task-specific metrics:
+  - **Total Time Spent**: Sum of `actualDuration` for all sessions linked to the task.
+  - **Completed vs Incomplete Sessions**: Counted completed sessions and calculated incomplete sessions.
+  - **Average Session Duration**: Calculated the average time spent per session.
+  - **Efficiency Metrics**: Compared actual time spent to planned time and expressed it as a percentage.
+- **Why**: To provide detailed insights into how much time users spend on tasks and how efficiently they work.
+- **Additional Features**:
+  - Tested the aggregation logic with a script to ensure accurate calculations.
+
+### Sub-todo 4.3.2: User Productivity Statistics
+- **What we did**: Added a method in `Session.js` to calculate user productivity metrics:
+  - **Daily/Weekly Session Counts**: Counted focus and break sessions.
+  - **Total Focus Time**: Calculated the total time spent in focus sessions.
+  - **Break-to-Focus Ratio**: Analyzed the ratio of break sessions to focus sessions.
+  - **Productivity Trends**: Supported filtering by date range to analyze trends over time.
+- **Why**: To help users understand their productivity patterns and improve their focus and break habits.
+- **Additional Features**:
+  - Tested the productivity metrics with a script to ensure accurate calculations.
+
+### Sub-todo 4.3.3: Session Controller Enhancements
+- **What we did**: Enhanced `sessionController.js` to include analytics and session management functions:
+  - **Task Analytics**: Added a method to fetch task-specific metrics (e.g., total time spent, session counts, efficiency).
+  - **User Productivity Analytics**: Added a method to fetch user productivity statistics (e.g., focus time, break time, trends).
+  - **Error Handling**: Included proper error handling for invalid requests and unauthorized access.
+  - **Validation and Sanitization**: Ensured input data is validated and sanitized before processing.
+- **Why**: To centralize session-related analytics and management logic, making it easier to maintain and extend.
+- **Additional Features**:
+  - Added routes in `routes/sessions.js` to expose analytics endpoints:
+    - **GET /api/sessions/analytics/task/:taskId**: Fetch task-specific analytics.
+    - **GET /api/sessions/analytics/user**: Fetch user productivity statistics.
+
+---

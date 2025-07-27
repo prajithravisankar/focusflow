@@ -116,4 +116,28 @@ const getSessionHistory = async (req, res) => {
   }
 };
 
-module.exports = { startSession, updateSession, completeSession, getSessionHistory };
+const getTaskAnalytics = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const metrics = await Task.calculateTaskMetrics(taskId);
+    res.status(200).json({ message: 'Task analytics retrieved successfully', metrics });
+  } catch (error) {
+    console.error('Error fetching task analytics:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const getUserProductivity = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    const stats = await Session.calculateUserStats(req.user.id, startDate, endDate);
+    res.status(200).json({ message: 'User productivity stats retrieved successfully', stats });
+  } catch (error) {
+    console.error('Error fetching user productivity stats:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { startSession, updateSession, completeSession, getSessionHistory, getTaskAnalytics, getUserProductivity };
