@@ -24,10 +24,37 @@ function Dashboard() {
   const [formData, setFormData] = useState({ 
     title: "", 
     description: "", 
+    priority: "medium",
     scheduledDate: "", 
     dueDate: "" 
   });
   const navigate = useNavigate();
+
+  const getPriorityStyle = (priority) => {
+    switch (priority) {
+      case 'high':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getPriorityIcon = (priority) => {
+    switch (priority) {
+      case 'high':
+        return '🔴';
+      case 'medium':
+        return '🟡';
+      case 'low':
+        return '🟢';
+      default:
+        return '⚪';
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +63,7 @@ function Dashboard() {
     const taskData = {
       title: formData.title,
       description: formData.description,
+      priority: formData.priority,
       scheduledDate: formData.scheduledDate || null,
       dueDate: formData.dueDate || null
     };
@@ -45,7 +73,7 @@ function Dashboard() {
       : await addTask(taskData);
 
     if (success) {
-      setFormData({ title: "", description: "", scheduledDate: "", dueDate: "" });
+      setFormData({ title: "", description: "", priority: "medium", scheduledDate: "", dueDate: "" });
       setShowAddForm(false);
       setEditingTask(null);
       
@@ -61,6 +89,7 @@ function Dashboard() {
     setFormData({ 
       title: task.title, 
       description: task.description || "",
+      priority: task.priority || "medium",
       scheduledDate: task.scheduledDate ? task.scheduledDate.split('T')[0] : "",
       dueDate: task.dueDate ? task.dueDate.split('T')[0] : ""
     });
@@ -68,7 +97,7 @@ function Dashboard() {
   };
 
   const handleCancel = () => {
-    setFormData({ title: "", description: "", scheduledDate: "", dueDate: "" });
+    setFormData({ title: "", description: "", priority: "medium", scheduledDate: "", dueDate: "" });
     setShowAddForm(false);
     setEditingTask(null);
   };
@@ -175,6 +204,20 @@ function Dashboard() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
+              <div className="mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Priority
+                </label>
+                <select
+                  className="w-full p-2 border rounded"
+                  value={formData.priority}
+                  onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -241,9 +284,17 @@ function Dashboard() {
                       className="w-4 h-4"
                     />
                     <div>
-                      <h3 className={`font-medium ${task.completed ? "line-through text-gray-500" : ""}`}>
-                        {task.title}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className={`font-medium ${task.completed ? "line-through text-gray-500" : ""}`}>
+                          {task.title}
+                        </h3>
+                        <span 
+                          className={`px-2 py-1 text-xs rounded-full border ${getPriorityStyle(task.priority || 'medium')}`}
+                          title={`${task.priority || 'medium'} priority`}
+                        >
+                          {getPriorityIcon(task.priority || 'medium')} {(task.priority || 'medium').toUpperCase()}
+                        </span>
+                      </div>
                       {task.description && (
                         <p className={`text-sm ${task.completed ? "line-through text-gray-400" : "text-gray-600"}`}>
                           {task.description}
