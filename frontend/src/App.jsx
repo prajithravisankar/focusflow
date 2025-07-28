@@ -32,6 +32,14 @@ function App() {
             }
           />
           <Route
+            path="/pomodoro"
+            element={
+              <ProtectedRoute>
+                <PomodoroTimer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/pomodoro/:taskId"
             element={
               <ProtectedRoute>
