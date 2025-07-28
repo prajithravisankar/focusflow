@@ -410,3 +410,96 @@
 - **Why**: To provide clear and detailed documentation for developers and testers, ensuring the API is easy to understand and use.
 
 ---
+
+## **Main Todo 5.1: React App Initialization**
+
+### Sub-todo 5.1.1: Create React App
+- **What we did**: Initialized the React app using Vite.
+  - Ran the following command to create the app:
+    ```bash
+    npm create vite@latest frontend --template react
+    cd frontend
+    ```
+  - Selected the **JavaScript** option during setup.
+  - Installed the project dependencies:
+    ```bash
+    npm install
+    ```
+- **Why**: To set up a modern, fast, and optimized development environment for the frontend using Vite.
+
+---
+
+### Sub-todo 5.1.2: Install Frontend Dependencies
+- **What we did**: Installed the required dependencies for the project.
+  - Installed the main dependencies:
+    ```bash
+    npm install axios react-router-dom daisyui
+    ```
+    - **`axios`**: For making HTTP requests to the backend.
+    - **`react-router-dom`**: For handling routing in the React app.
+    - **`daisyui`**: A Tailwind CSS-based UI library for prebuilt components.
+  - Installed the development dependencies for Tailwind CSS:
+    ```bash
+    npm install -D tailwindcss postcss autoprefixer
+    ```
+    - **`tailwindcss`**: The core Tailwind CSS library.
+    - **`postcss`**: A tool for transforming CSS with plugins.
+    - **`autoprefixer`**: A PostCSS plugin that adds vendor prefixes for better browser compatibility.
+- **Why**: To set up the tools and libraries needed for styling, routing, and API integration.
+
+---
+
+### Sub-todo 5.1.3: Configure Tailwind CSS and DaisyUI
+- **What we did**: Configured Tailwind CSS and DaisyUI for styling.
+  - Created the `tailwind.config.cjs` file (changed from `.js` to `.cjs` due to Vite's `"type": "module"` setting):
+    ```javascript
+    module.exports = {
+      content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+      theme: {
+        extend: {},
+      },
+      plugins: [require('daisyui')],
+    };
+    ```
+  - Created the `postcss.config.cjs` file (changed from `.js` to `.cjs`):
+    ```javascript
+    module.exports = {
+      plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+      },
+    };
+    ```
+  - Added Tailwind CSS imports to `src/index.css`:
+    ```css
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    ```
+  - Tested the setup by adding a simple DaisyUI button in `App.jsx`:
+    ```jsx
+    function App() {
+      return (
+        <div className="flex items-center justify-center h-screen bg-gray-100">
+          <button className="btn btn-primary">Test DaisyUI Button</button>
+        </div>
+      );
+    }
+
+    export default App;
+    ```
+  - Ran the development server:
+    ```bash
+    npm run dev
+    ```
+  - Verified in the browser that:
+    - The background was light gray (`bg-gray-100` from Tailwind CSS).
+    - A blue button labeled "Test DaisyUI Button" was displayed (`btn btn-primary` from DaisyUI).
+- **Why**: To set up Tailwind CSS and DaisyUI for styling and ensure they work seamlessly with Vite.
+
+---
+
+### **Note**
+- Both `tailwind.config.js` and `postcss.config.js` were renamed to `.cjs` to resolve the `module is not defined` error caused by Vite's `"type": "module"` setting in `package.json`.
+
+---
