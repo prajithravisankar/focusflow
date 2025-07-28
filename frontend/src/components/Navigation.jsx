@@ -46,16 +46,6 @@ function Navigation() {
                   </span>
                 </Link>
 
-                {/* Pomodoro link */}
-                <Link 
-                  to="/pomodoro" 
-                  className="group px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 text-white/90 hover:text-white rounded-xl border border-green-400/30 hover:border-green-300/50 font-semibold transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-xl backdrop-blur-sm"
-                >
-                  <span className="flex items-center gap-2">
-                    🍅 Focus
-                  </span>
-                </Link>
-
                 {/* Analytics link */}
                 <Link 
                   to="/analytics" 
