@@ -5,7 +5,7 @@ import TaskContext from "../context/TaskContext.jsx";
 
 function Analytics() {
   const navigate = useNavigate();
-  const { sessions = [] } = useContext(SessionContext);
+  const { sessions = [], currentSession } = useContext(SessionContext);
   const { tasks = [] } = useContext(TaskContext);
 
   // Calculate all stats using useMemo to prevent infinite loops
@@ -69,9 +69,19 @@ function Analytics() {
 
     // Calculate time spent (in minutes)
     const getTimeSpent = (startDate) => {
-      return getSessionsInPeriod(startDate).reduce((total, session) => {
+      let totalTime = getSessionsInPeriod(startDate).reduce((total, session) => {
         return total + (session.duration || 0);
       }, 0);
+      
+      // Add current session time if it exists and falls within the time period
+      if (currentSession && currentSession.startTime && currentSession.duration) {
+        const sessionDate = new Date(currentSession.startTime);
+        if (sessionDate >= startDate) {
+          totalTime += currentSession.duration;
+        }
+      }
+      
+      return totalTime;
     };
 
     const timeSpentToday = getTimeSpent(today);
@@ -89,7 +99,7 @@ function Analytics() {
       timeSpentThisMonth,
       timeSpentThisYear
     };
-  }, [sessions.length, tasks.length]); // Only depend on array lengths to avoid infinite loops
+  }, [sessions.length, tasks.length, currentSession?.duration]); // Include current session duration to update analytics in real-time
 
   // Format time helper
   const formatTime = (minutes) => {
@@ -164,6 +174,235 @@ function Analytics() {
             <div className="bg-white rounded-lg p-6 shadow-sm border">
               <div className="text-3xl font-bold text-orange-600">{formatTime(stats.timeSpentThisYear)}</div>
               <div className="text-gray-600 text-sm font-medium">This Year</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Visual Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Tasks Completed Chart */}
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">📈 Tasks Progress</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">Today</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((stats.tasksCompletedToday / Math.max(stats.tasksCompletedThisWeek, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-blue-600">{stats.tasksCompletedToday}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">This Week</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((stats.tasksCompletedThisWeek / Math.max(stats.tasksCompletedThisMonth, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-green-600">{stats.tasksCompletedThisWeek}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">This Month</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((stats.tasksCompletedThisMonth / Math.max(stats.tasksCompletedThisYear, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-purple-600">{stats.tasksCompletedThisMonth}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">This Year</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: '100%' }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-orange-600">{stats.tasksCompletedThisYear}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Time Spent Chart */}
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">⏰ Time Investment</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">Today</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-blue-400 to-blue-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((stats.timeSpentToday / Math.max(stats.timeSpentThisWeek, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-blue-600">{formatTime(stats.timeSpentToday)}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">This Week</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-green-400 to-green-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((stats.timeSpentThisWeek / Math.max(stats.timeSpentThisMonth, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-green-600">{formatTime(stats.timeSpentThisWeek)}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">This Month</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-purple-400 to-purple-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((stats.timeSpentThisMonth / Math.max(stats.timeSpentThisYear, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-purple-600">{formatTime(stats.timeSpentThisMonth)}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">This Year</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-orange-400 to-orange-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: '100%' }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-orange-600">{formatTime(stats.timeSpentThisYear)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Productivity Trend Chart */}
+        <div className="bg-white rounded-lg p-6 shadow-sm border mb-8">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">📊 Productivity Overview</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Daily Efficiency */}
+            <div className="text-center">
+              <div className="relative w-20 h-20 mx-auto mb-2">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="2"
+                    strokeDasharray={`${Math.min((stats.tasksCompletedToday / Math.max(stats.tasksCompletedToday + 2, 1)) * 100, 100)}, 100`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-sm font-bold text-blue-600">{stats.tasksCompletedToday}</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600">Today's Tasks</p>
+            </div>
+
+            {/* Weekly Progress */}
+            <div className="text-center">
+              <div className="relative w-20 h-20 mx-auto mb-2">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#10b981"
+                    strokeWidth="2"
+                    strokeDasharray={`${Math.min((stats.tasksCompletedThisWeek / Math.max(stats.tasksCompletedThisWeek + 3, 1)) * 100, 100)}, 100`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-sm font-bold text-green-600">{stats.tasksCompletedThisWeek}</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600">This Week</p>
+            </div>
+
+            {/* Focus Time */}
+            <div className="text-center">
+              <div className="relative w-20 h-20 mx-auto mb-2">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#8b5cf6"
+                    strokeWidth="2"
+                    strokeDasharray={`${Math.min((stats.timeSpentToday / 120) * 100, 100)}, 100`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-bold text-purple-600">{Math.floor(stats.timeSpentToday / 60)}h</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600">Hours Today</p>
+            </div>
+
+            {/* Monthly Goals */}
+            <div className="text-center">
+              <div className="relative w-20 h-20 mx-auto mb-2">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#f59e0b"
+                    strokeWidth="2"
+                    strokeDasharray={`${Math.min((stats.tasksCompletedThisMonth / Math.max(stats.tasksCompletedThisMonth + 5, 1)) * 100, 100)}, 100`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-sm font-bold text-orange-600">{stats.tasksCompletedThisMonth}</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600">This Month</p>
             </div>
           </div>
         </div>

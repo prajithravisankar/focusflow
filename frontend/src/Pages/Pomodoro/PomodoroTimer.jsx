@@ -7,12 +7,14 @@ function PomodoroTimer() {
   const { taskId } = useParams();
   const navigate = useNavigate();
   const { tasks } = useContext(TaskContext);
-  const { createSession, finishSession, currentSession } = useContext(SessionContext);
+  const { createSession, finishSession, currentSession, updateCurrentSession } = useContext(SessionContext);
   
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
   const [isRunning, setIsRunning] = useState(false);
   const [sessionType, setSessionType] = useState("focus"); // focus or break
   const [sessionId, setSessionId] = useState(null);
+  const [sessionStartTime, setSessionStartTime] = useState(null); // Track when session actually started
+  const [totalElapsedTime, setTotalElapsedTime] = useState(0); // Track total elapsed time in minutes
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
 
@@ -50,12 +52,34 @@ function PomodoroTimer() {
         endTime: new Date(Date.now() + (sessionType === "focus" ? focusDuration : breakDuration) * 60 * 1000)
       });
       setSessionId(newSessionId);
+      setTotalElapsedTime(0); // Reset total elapsed time for new session
     }
+    setSessionStartTime(new Date()); // Track when this timer run started
     setIsRunning(true);
   };
 
-  const pauseTimer = () => {
+  const pauseTimer = async () => {
+    if (sessionStartTime && sessionId) {
+      // Calculate elapsed time for this timer run in minutes
+      const now = new Date();
+      const elapsedSeconds = Math.floor((now - sessionStartTime) / 1000);
+      const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+      
+      // Add to total elapsed time
+      const newTotalElapsed = totalElapsedTime + elapsedMinutes;
+      setTotalElapsedTime(newTotalElapsed);
+      
+      // Update the session with the elapsed time immediately
+      await updateCurrentSession(sessionId, {
+        duration: newTotalElapsed, // Update with total elapsed time
+        lastUpdated: now
+      });
+      
+      console.log(`Session paused. Elapsed time this run: ${elapsedMinutes}m, Total elapsed: ${newTotalElapsed}m`);
+    }
+    
     setIsRunning(false);
+    setSessionStartTime(null); // Clear the start time
   };
 
   const resetTimer = () => {
@@ -64,11 +88,29 @@ function PomodoroTimer() {
   };
 
   const handleTimerComplete = async () => {
+    // Calculate final elapsed time if timer was running
+    if (sessionStartTime && sessionId) {
+      const now = new Date();
+      const elapsedSeconds = Math.floor((now - sessionStartTime) / 1000);
+      const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+      const finalTotalElapsed = totalElapsedTime + elapsedMinutes;
+      
+      // Update session with final elapsed time before finishing
+      await updateCurrentSession(sessionId, {
+        duration: finalTotalElapsed,
+        lastUpdated: now
+      });
+      
+      console.log(`Session completed. Final elapsed time: ${finalTotalElapsed}m`);
+    }
+    
     setIsRunning(false);
     
     if (sessionId) {
       await finishSession(sessionId);
       setSessionId(null);
+      setTotalElapsedTime(0);
+      setSessionStartTime(null);
     }
 
     if (sessionType === "focus") {
@@ -251,6 +293,11 @@ function PomodoroTimer() {
                     <div className="text-lg font-semibold text-gray-600 capitalize">
                       {sessionType} Session
                     </div>
+                    {totalElapsedTime > 0 && (
+                      <div className="text-sm text-gray-500 mt-2">
+                        Total elapsed: {totalElapsedTime}m
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
