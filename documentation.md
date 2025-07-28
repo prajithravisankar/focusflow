@@ -434,10 +434,6 @@
 ### **Sub-todo 5.1.2: Install Frontend Dependencies**
 - **What we did**:
   - Installed the required dependencies:
-    ```bash
-    npm install axios react-router-dom
-    npm install -D tailwindcss postcss autoprefixer
-    ```
   - Verified the installation by checking the `package.json` file to ensure the dependencies were listed under `dependencies` and `devDependencies`.
 
 ---
@@ -445,57 +441,9 @@
 ### **Sub-todo 5.1.3: Configure Tailwind CSS**
 - **What we did**:
   - Initialized Tailwind CSS:
-    ```bash
-    npx tailwindcss init -p
-    ```
-    - This created the `tailwind.config.js` and `postcss.config.js` files.
   - Updated `tailwind.config.js` to include the project files and custom colors for the valentine theme:
-    ```javascript
-    // filepath: frontend/tailwind.config.js
-    export default {
-      content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
-      theme: {
-        extend: {
-          colors: {
-            primary: '#ec4899', // Soft pink for valentine theme
-            secondary: '#f472b6',
-            background: '#fdf2f8',
-            text: '#1f2937',
-          },
-        },
-      },
-      plugins: [],
-    };
-    ```
   - Added Tailwind CSS imports to `src/index.css`:
-    ```css
-    /* filepath: frontend/src/index.css */
-    @import "tailwindcss";
-
-    /* Custom styles for valentine theme */
-    body {
-      background-color: #fdf2f8; /* Light pink background */
-      color: #1f2937; /* Neutral text color */
-    }
-    ```
   - Tested Tailwind CSS by updating `src/App.jsx` with a sample UI:
-    ```jsx
-    function App() {
-      return (
-        <div className="flex items-center justify-center h-screen bg-background">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-primary">Welcome to FocusFlow</h1>
-            <p className="text-secondary mt-4">A modern, minimalistic app for productivity</p>
-            <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg shadow-lg hover:bg-secondary">
-              Get Started
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    export default App;
-    ```
   - Verified the setup by running the development server and confirming the styles were applied.
 
 ---
@@ -503,46 +451,39 @@
 ### **Sub-todo 5.1.4: Set Up Environment Configuration**
 - **What we did**:
   - Created a `.env` file in the root of the `frontend` folder:
-    ```env
-    VITE_API_URL=http://localhost:5050/api
-    ```
   - Created an Axios service in `src/services/api.js`:
-    ```javascript
-    import axios from 'axios';
-
-    const api = axios.create({
-      baseURL: import.meta.env.VITE_API_URL, // Use the environment variable for the base URL
-    });
-
-    export default api;
-    ```
   - Tested the configuration by making a sample API call in `src/Api.jsx`:
-    ```jsx
-    import { useEffect } from 'react';
-    import api from './services/api';
-
-    function App() {
-      useEffect(() => {
-        api.get('/test')
-          .then((response) => console.log(response.data))
-          .catch((error) => console.error('Error:', error));
-      }, []);
-
-      return (
-        <div className="flex items-center justify-center h-screen bg-background">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-primary">Welcome to FocusFlow</h1>
-            <p className="text-secondary mt-4">A modern, minimalistic app for productivity</p>
-            <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg shadow-lg hover:bg-secondary">
-              Get Started
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    export default App;
-    ```
   - Verified the API call by checking the browser console for the response or error message.
+
+---
+
+## **Main Todo 5.3: Authentication Context & State Management**
+
+### **Sub-todo 5.3.1: Create AuthContext**
+- **What we did**: 
+  - Created `AuthContext` to manage authentication state, including `user`, `loading`, and `error` states.
+  - Implemented `login`, `register`, and `logout` functions.
+  - Added token persistence using `localStorage`.
+- **Why**: To centralize authentication logic and provide global access to authentication state across the app.
+
+---
+
+### **Sub-todo 5.3.2: API Service Setup**
+- **What we did**: 
+  - Configured an Axios instance with the base URL from the `.env` file.
+  - Added request interceptors to include JWT tokens in API calls.
+  - Added response interceptors to handle errors (e.g., token expiration).
+  - Created reusable authentication API functions (`loginUser`, `registerUser`).
+- **Why**: To simplify API calls and ensure secure communication with the backend.
+
+---
+
+### **Sub-todo 5.3.3: Protected Route Component**
+- **What we did**: 
+  - Created a `ProtectedRoute` component to restrict access to authenticated pages.
+  - Checked authentication status using `AuthContext`.
+  - Redirected unauthenticated users to the `/login` page.
+  - Displayed a loading state while verifying authentication.
+- **Why**: To ensure only authenticated users can access sensitive routes like `/dashboard` and `/pomodoro/:taskId`.
 
 ---
