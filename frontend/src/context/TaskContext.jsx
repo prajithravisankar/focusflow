@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { createTask, getTasks, updateTask, deleteTask } from "../services/api";
+import { createTask, getTasks, updateTask, deleteTask, getCalendarData, getTasksByDate } from "../services/api";
 import AuthContext from "./AuthContext.jsx";
 
 const TaskContext = createContext();
@@ -7,6 +7,9 @@ const TaskContext = createContext();
 export const TaskProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [dateFilteredTasks, setDateFilteredTasks] = useState([]);
+  const [calendarData, setCalendarData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -83,16 +86,82 @@ export const TaskProvider = ({ children }) => {
     return false;
   };
 
+  // Calendar-related functions
+  const fetchCalendarData = async (startDate, endDate) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Calculate week range if no dates provided or only startDate provided
+      let startDateStr = startDate;
+      let endDateStr = endDate;
+      
+      if (!startDate || !endDate) {
+        const baseDate = startDate ? new Date(startDate + 'T00:00:00') : new Date();
+        const weekStart = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+        
+        // Format as YYYY-MM-DD
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+        
+        startDateStr = formatDate(weekStart);
+        endDateStr = formatDate(weekEnd);
+      }
+      
+      const response = await getCalendarData(startDateStr, endDateStr);
+      setCalendarData(response || {});
+      return response;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch calendar data");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTasksByDate = async (date) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await getTasksByDate(date);
+      setSelectedDate(date);
+      setDateFilteredTasks(response.tasks || []);
+      return response;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch tasks for date");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearDateFilter = () => {
+    setSelectedDate(null);
+    setDateFilteredTasks([]);
+  };
+
   return (
     <TaskContext.Provider value={{
       tasks,
+      selectedDate,
+      dateFilteredTasks,
+      calendarData,
       loading,
       error,
       fetchTasks,
       addTask,
       editTask,
       removeTask,
-      toggleTaskCompletion
+      toggleTaskCompletion,
+      fetchCalendarData,
+      fetchTasksByDate,
+      clearDateFilter
     }}>
       {children}
     </TaskContext.Provider>

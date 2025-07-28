@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext.jsx";
-import ThemeToggle from "./ThemeToggle.jsx";
 
 function Navigation() {
   const { user, logout } = useContext(AuthContext);
@@ -13,12 +12,11 @@ function Navigation() {
   };
 
   return (
-    <nav className="bg-blue-500 dark:bg-gray-800 text-white p-4 flex justify-between items-center transition-colors duration-200">
+    <nav className="bg-blue-500 text-white p-4 flex justify-between items-center">
       <Link to="/" className="text-lg font-bold">
         FocusFlow
       </Link>
-      <div className="flex items-center gap-4">
-        <ThemeToggle />
+      <div>
         {user ? (
           <>
             <span className="mr-4">Welcome, {user.firstName || user.email}</span>
@@ -27,7 +25,7 @@ function Navigation() {
             </Link>
             <button
               onClick={handleLogout}
-              className="bg-red-500 dark:bg-red-600 px-4 py-2 rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-200"
+              className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
             >
               Logout
             </button>

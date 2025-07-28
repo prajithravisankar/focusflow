@@ -16,6 +16,30 @@ const taskSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    priority: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+    },
+    estimatedPomodoros: {
+      type: Number,
+      default: 1,
+      min: [1, 'Estimated pomodoros must be at least 1'],
+      max: [20, 'Estimated pomodoros cannot exceed 20'],
+    },
+    completedPomodoros: {
+      type: Number,
+      default: 0,
+      min: [0, 'Completed pomodoros cannot be negative'],
+    },
+    scheduledDate: {
+      type: Date,
+      default: null, // Tasks can be created without scheduling
+    },
+    dueDate: {
+      type: Date,
+      default: null, // Tasks can be created without due dates
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -32,8 +56,11 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
-// Add an index for efficient querying by userId
+// Add indexes for efficient querying
 taskSchema.index({ userId: 1, createdAt: -1 });
+taskSchema.index({ userId: 1, scheduledDate: 1 });
+taskSchema.index({ userId: 1, dueDate: 1 });
+taskSchema.index({ userId: 1, completed: 1 });
 
 taskSchema.statics.calculateTaskMetrics = async function (taskId) {
   const sessions = await Session.find({ taskId });

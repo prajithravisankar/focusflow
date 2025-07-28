@@ -109,12 +109,12 @@ function PomodoroTimer() {
 
   if (!task) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Task not found</h1>
+          <h1 className="text-2xl font-bold mb-4">Task not found</h1>
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Back to Dashboard
           </button>
@@ -124,14 +124,14 @@ function PomodoroTimer() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-200">
+    <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border dark:border-gray-700">
+        <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Pomodoro Timer</h1>
-            <h2 className="text-xl text-gray-600 dark:text-gray-300 mb-2">{task.title}</h2>
+            <h1 className="text-3xl font-bold mb-2">Pomodoro Timer</h1>
+            <h2 className="text-xl text-gray-600 mb-2">{task.title}</h2>
             {task.description && (
-              <p className="text-gray-500 dark:text-gray-400">{task.description}</p>
+              <p className="text-gray-500">{task.description}</p>
             )}
           </div>
 
@@ -139,27 +139,27 @@ function PomodoroTimer() {
             <div className="flex justify-center gap-2 mb-4">
               <button
                 onClick={() => switchMode("focus")}
-                className={`px-4 py-2 rounded transition-colors duration-200 ${
+                className={`px-4 py-2 rounded ${
                   sessionType === "focus" 
-                    ? "bg-blue-500 dark:bg-blue-600 text-white" 
-                    : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    ? "bg-blue-500 text-white" 
+                    : "bg-gray-200 text-gray-700"
                 }`}
               >
                 Focus
               </button>
               <button
                 onClick={() => switchMode("break")}
-                className={`px-4 py-2 rounded transition-colors duration-200 ${
+                className={`px-4 py-2 rounded ${
                   sessionType === "break" 
-                    ? "bg-green-500 dark:bg-green-600 text-white" 
-                    : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    ? "bg-green-500 text-white" 
+                    : "bg-gray-200 text-gray-700"
                 }`}
               >
                 Break
               </button>
             </div>
 
-            <div className="text-6xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+            <div className="text-6xl font-bold mb-6 text-gray-800">
               {formatTime(timeLeft)}
             </div>
 
@@ -167,32 +167,32 @@ function PomodoroTimer() {
               {!isRunning ? (
                 <button
                   onClick={startTimer}
-                  className="bg-green-500 dark:bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-200"
+                  className="bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600"
                 >
                   Start
                 </button>
               ) : (
                 <button
                   onClick={pauseTimer}
-                  className="bg-yellow-500 dark:bg-yellow-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-yellow-600 dark:hover:bg-yellow-700 transition-colors duration-200"
+                  className="bg-yellow-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-yellow-600"
                 >
                   Pause
                 </button>
               )}
               <button
                 onClick={resetTimer}
-                className="bg-gray-500 dark:bg-gray-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="bg-gray-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-gray-600"
               >
                 Reset
               </button>
             </div>
           </div>
 
-          <div className="border-t dark:border-gray-600 pt-6">
-            <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Settings</h3>
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-bold mb-4">Settings</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-1">
                   Focus Duration (minutes)
                 </label>
                 <input
@@ -201,12 +201,12 @@ function PomodoroTimer() {
                   max="60"
                   value={focusDuration}
                   onChange={(e) => handleDurationChange("focus", parseInt(e.target.value))}
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
+                  className="w-full p-2 border rounded"
                   disabled={isRunning}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-1">
                   Break Duration (minutes)
                 </label>
                 <input
@@ -215,7 +215,7 @@ function PomodoroTimer() {
                   max="30"
                   value={breakDuration}
                   onChange={(e) => handleDurationChange("break", parseInt(e.target.value))}
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
+                  className="w-full p-2 border rounded"
                   disabled={isRunning}
                 />
               </div>
@@ -225,7 +225,7 @@ function PomodoroTimer() {
           <div className="text-center mt-6">
             <button
               onClick={() => navigate("/dashboard")}
-              className="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Back to Dashboard
             </button>

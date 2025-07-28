@@ -69,6 +69,17 @@ export const deleteTask = async (taskId) => {
   return response.data;
 };
 
+// Calendar API functions
+export const getCalendarData = async (startDate, endDate) => {
+  const response = await api.get(`/tasks/calendar?startDate=${startDate}&endDate=${endDate}`);
+  return response.data;
+};
+
+export const getTasksByDate = async (date) => {
+  const response = await api.get(`/tasks/date/${date}`);
+  return response.data;
+};
+
 // Session API functions
 export const startSession = async (sessionData) => {
   const response = await api.post("/sessions/start", sessionData);

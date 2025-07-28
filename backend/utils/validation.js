@@ -20,6 +20,10 @@ const taskValidation = [
   check('title').notEmpty().withMessage('Task title is required').isLength({ max: 200 }).withMessage('Task title cannot exceed 200 characters'),
   check('description').optional().isLength({ max: 1000 }).withMessage('Task description cannot exceed 1000 characters'),
   check('completed').optional().isBoolean().withMessage('Completed status must be a boolean'),
+  check('priority').optional().isIn(['low', 'medium', 'high']).withMessage('Priority must be low, medium, or high'),
+  check('estimatedPomodoros').optional().isInt({ min: 1, max: 20 }).withMessage('Estimated pomodoros must be between 1 and 20'),
+  check('scheduledDate').optional().isISO8601().withMessage('Scheduled date must be a valid date'),
+  check('dueDate').optional().isISO8601().withMessage('Due date must be a valid date'),
 ];
 
 // middleware to handle validation errors
