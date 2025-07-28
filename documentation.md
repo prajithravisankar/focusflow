@@ -357,3 +357,56 @@
     - **GET /api/sessions/analytics/user**: Fetch user productivity statistics.
 
 ---
+
+## **Main Todo 4.4: Session Routes, Testing, and Documentation**
+
+### Sub-todo 4.4.1: Session Routes Setup (routes/sessions.js)
+- **What we did**: Defined all session management routes in `routes/sessions.js`:
+  - **POST /api/sessions/start**: Start a new session.
+  - **PUT /api/sessions/:id**: Update an existing session (e.g., pause/resume).
+  - **POST /api/sessions/:id/complete**: Mark a session as completed.
+  - **GET /api/sessions**: Fetch session history with filtering and pagination.
+  - **GET /api/sessions/analytics/task/:taskId**: Fetch task-specific analytics.
+  - **GET /api/sessions/analytics/user**: Fetch user productivity statistics.
+- **Why**: To organize session-related routes and connect them to the corresponding controller functions.
+- **Additional Features**:
+  - Applied `authMiddleware` to protect all routes.
+  - Used `rateLimit` middleware to limit session-related requests (e.g., 10 requests per hour per IP).
+  - Connected routes to the appropriate controller functions.
+
+### Sub-todo 4.4.2: Backend Integration Testing
+- **What we did**: Performed integration testing to ensure all session-related functionality works as expected:
+  - **Complete Task-to-Session Workflow**:
+    - Created a task, started a session, updated the session (pause/resume), and completed the session.
+    - Verified that the session was correctly linked to the task and user.
+    - Ensured that task metrics (e.g., `totalTimeSpent`) were updated after completing the session.
+  - **Session Timing Accuracy**:
+    - Tested sessions with different `startTime` and `endTime` values.
+    - Verified that `actualDuration` was calculated correctly (`actualDuration = endTime - startTime - pausedDuration`).
+  - **Pause/Resume Functionality**:
+    - Tested the `PUT /api/sessions/:id` endpoint with `action: "pause"` and `action: "resume"`.
+    - Verified that `pausedDuration` was updated correctly.
+  - **Analytics Calculations**:
+    - Tested task analytics (`GET /api/sessions/analytics/task/:taskId`) and user productivity stats (`GET /api/sessions/analytics/user`).
+    - Verified that metrics like total focus time, break-to-focus ratio, and efficiency were accurate.
+- **Why**: To ensure that all session-related features work seamlessly and provide accurate data.
+
+### Sub-todo 4.4.3: API Documentation
+- **What we did**: Created comprehensive API documentation in `api-documentation.md`:
+  - Documented all session-related endpoints with request/response examples.
+  - Included authentication requirements for each endpoint.
+  - Added error response formats for common errors (e.g., `400 Bad Request`, `401 Unauthorized`, `404 Not Found`).
+  - Provided detailed examples for each endpoint, including:
+    - **POST /api/sessions/start**: Example request body and success/error responses.
+    - **PUT /api/sessions/:id**: Example for pause/resume functionality.
+    - **POST /api/sessions/:id/complete**: Example for completing a session.
+    - **GET /api/sessions**: Example for fetching session history with filtering and pagination.
+    - **GET /api/sessions/analytics/task/:taskId**: Example for task-specific analytics.
+    - **GET /api/sessions/analytics/user**: Example for user productivity statistics.
+  - Created a Postman collection for testing:
+    - Added all session-related endpoints to the collection.
+    - Included example requests and responses for each endpoint.
+    - Exported the collection as a `.json` file for easy sharing and testing.
+- **Why**: To provide clear and detailed documentation for developers and testers, ensuring the API is easy to understand and use.
+
+---
