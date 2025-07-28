@@ -56,6 +56,23 @@ function Dashboard() {
     }
   };
 
+  const getTaskTypeInfo = (task, selectedDate) => {
+    if (!selectedDate || !task.taskType) return null;
+    
+    switch (task.taskType) {
+      case 'scheduled':
+        return { icon: '📅', text: 'Scheduled today', color: 'text-blue-600' };
+      case 'due':
+        return { icon: '⏰', text: 'Due today', color: 'text-red-600' };
+      case 'both':
+        return { icon: '📅⏰', text: 'Scheduled & Due today', color: 'text-purple-600' };
+      case 'active':
+        return { icon: '🔄', text: 'Active task', color: 'text-green-600' };
+      default:
+        return null;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
@@ -294,6 +311,14 @@ function Dashboard() {
                         >
                           {getPriorityIcon(task.priority || 'medium')} {(task.priority || 'medium').toUpperCase()}
                         </span>
+                        {selectedDate && getTaskTypeInfo(task, selectedDate) && (
+                          <span 
+                            className={`px-2 py-1 text-xs rounded-full bg-gray-100 ${getTaskTypeInfo(task, selectedDate).color}`}
+                            title={getTaskTypeInfo(task, selectedDate).text}
+                          >
+                            {getTaskTypeInfo(task, selectedDate).icon} {getTaskTypeInfo(task, selectedDate).text}
+                          </span>
+                        )}
                       </div>
                       {task.description && (
                         <p className={`text-sm ${task.completed ? "line-through text-gray-400" : "text-gray-600"}`}>

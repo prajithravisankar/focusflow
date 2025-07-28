@@ -179,54 +179,84 @@ const getTasksByDate = async (req, res) => {
     const endOfDay = new Date(filterDate);
     endOfDay.setHours(23, 59, 59, 999);
 
-    // Get tasks scheduled for this date
-    const scheduledTasks = await Task.find({
+    // Find tasks that are active on this date
+    // A task is active if:
+    // 1. It's scheduled for this date, OR
+    // 2. It's due on this date, OR  
+    // 3. This date falls between scheduled date and due date, OR
+    // 4. It has only a scheduled date and this date is >= scheduled date, OR
+    // 5. It has only a due date and this date is <= due date
+
+    const tasks = await Task.find({
       userId: req.user.id,
-      scheduledDate: {
-        $gte: startOfDay,
-        $lte: endOfDay
-      }
+      $or: [
+        // Case 1: Scheduled exactly on this date
+        {
+          scheduledDate: {
+            $gte: startOfDay,
+            $lte: endOfDay
+          }
+        },
+        // Case 2: Due exactly on this date
+        {
+          dueDate: {
+            $gte: startOfDay,
+            $lte: endOfDay
+          }
+        },
+        // Case 3: This date falls between scheduled and due date
+        {
+          scheduledDate: { $lte: endOfDay },
+          dueDate: { $gte: startOfDay }
+        },
+        // Case 4: Only has scheduled date and this date is >= scheduled date
+        {
+          scheduledDate: { $lte: endOfDay },
+          dueDate: { $exists: false }
+        },
+        // Case 5: Only has due date and this date is <= due date  
+        {
+          dueDate: { $gte: startOfDay },
+          scheduledDate: { $exists: false }
+        }
+      ]
     }).sort({ createdAt: -1 });
 
-    // Get tasks due on this date
-    const dueTasks = await Task.find({
-      userId: req.user.id,
-      dueDate: {
-        $gte: startOfDay,
-        $lte: endOfDay
-      }
-    }).sort({ createdAt: -1 });
+    // Add task type information for each task
+    const tasksWithType = tasks.map(task => {
+      const taskObj = task.toObject();
+      const taskStartOfDay = new Date(filterDate);
+      taskStartOfDay.setHours(0, 0, 0, 0);
+      const taskEndOfDay = new Date(filterDate);
+      taskEndOfDay.setHours(23, 59, 59, 999);
 
-    // Combine and deduplicate tasks (in case a task is both scheduled and due on the same date)
-    const taskIds = new Set();
-    const allTasks = [];
+      let taskType = 'active'; // Default for tasks in date range
 
-    scheduledTasks.forEach(task => {
-      if (!taskIds.has(task._id.toString())) {
-        taskIds.add(task._id.toString());
-        allTasks.push({ ...task.toObject(), taskType: 'scheduled' });
-      }
-    });
-
-    dueTasks.forEach(task => {
-      if (!taskIds.has(task._id.toString())) {
-        taskIds.add(task._id.toString());
-        allTasks.push({ ...task.toObject(), taskType: 'due' });
-      } else {
-        // If task is already in the list, mark it as both scheduled and due
-        const existingTask = allTasks.find(t => t._id.toString() === task._id.toString());
-        if (existingTask) {
-          existingTask.taskType = 'both';
+      // Check if it's specifically scheduled on this date
+      if (task.scheduledDate) {
+        const scheduledDate = new Date(task.scheduledDate);
+        scheduledDate.setHours(0, 0, 0, 0);
+        if (scheduledDate.getTime() === taskStartOfDay.getTime()) {
+          taskType = 'scheduled';
         }
       }
+
+      // Check if it's specifically due on this date
+      if (task.dueDate) {
+        const dueDate = new Date(task.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        if (dueDate.getTime() === taskStartOfDay.getTime()) {
+          taskType = taskType === 'scheduled' ? 'both' : 'due';
+        }
+      }
+
+      return { ...taskObj, taskType };
     });
 
     res.status(200).json({
       date,
-      tasks: allTasks,
-      totalTasks: allTasks.length,
-      scheduledCount: scheduledTasks.length,
-      dueCount: dueTasks.length
+      tasks: tasksWithType,
+      totalTasks: tasksWithType.length
     });
   } catch (error) {
     console.error('Error fetching tasks by date:', error);
@@ -266,26 +296,44 @@ const getCalendarData = async (req, res) => {
       const endOfDay = new Date(currentDate);
       endOfDay.setHours(23, 59, 59, 999);
 
-      // Only count tasks if the date is valid
-      let scheduledCount = 0;
-      let dueCount = 0;
+      // Count tasks that are active on this date
+      let activeTaskCount = 0;
 
       try {
-        // Count tasks for this date
-        scheduledCount = await Task.countDocuments({
+        // Count tasks active on this date using the same logic as getTasksByDate
+        activeTaskCount = await Task.countDocuments({
           userId: req.user.id,
-          scheduledDate: {
-            $gte: startOfDay,
-            $lte: endOfDay
-          }
-        });
-
-        dueCount = await Task.countDocuments({
-          userId: req.user.id,
-          dueDate: {
-            $gte: startOfDay,
-            $lte: endOfDay
-          }
+          $or: [
+            // Scheduled exactly on this date
+            {
+              scheduledDate: {
+                $gte: startOfDay,
+                $lte: endOfDay
+              }
+            },
+            // Due exactly on this date
+            {
+              dueDate: {
+                $gte: startOfDay,
+                $lte: endOfDay
+              }
+            },
+            // This date falls between scheduled and due date
+            {
+              scheduledDate: { $lte: endOfDay },
+              dueDate: { $gte: startOfDay }
+            },
+            // Only has scheduled date and this date is >= scheduled date
+            {
+              scheduledDate: { $lte: endOfDay },
+              dueDate: { $exists: false }
+            },
+            // Only has due date and this date is <= due date  
+            {
+              dueDate: { $gte: startOfDay },
+              scheduledDate: { $exists: false }
+            }
+          ]
         });
       } catch (countError) {
         console.error('Error counting tasks for date:', currentDate, countError);
@@ -306,10 +354,8 @@ const getCalendarData = async (req, res) => {
         year: currentDate.getFullYear().toString(),
         isToday: currentDate.getTime() === todayLocal.getTime(),
         isWeekend: [0, 6].includes(currentDate.getDay()),
-        taskCount: scheduledCount + dueCount,
-        scheduledCount,
-        dueCount,
-        hasTasks: (scheduledCount + dueCount) > 0
+        taskCount: activeTaskCount,
+        hasTasks: activeTaskCount > 0
       });
     }
 
