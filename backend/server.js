@@ -45,8 +45,8 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5050;
-const loginRateLimit = rateLimit('login', 5, 15 * 60);
-const registerRateLimit = rateLimit('register', 3, 60 * 60);
+const loginRateLimit = rateLimit('login', 50, 15 * 60);
+const registerRateLimit = rateLimit('register', 30, 60 * 60);
 
 
 // Route to generate a token (for testing)

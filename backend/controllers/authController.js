@@ -2,36 +2,39 @@
 const User = require('../models/User');
 const { generateAccessToken } = require('../utils/jwt');
 const { validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
 
 // Registration logic
 const register = async (req, res) => {
   try {
+    console.log('Registration request received:', req.body);
+    
     // Validate input
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { firstName, lastName, email, password } = req.body;
+    console.log('Extracted data:', { firstName, lastName, email, passwordLength: password?.length });
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      console.log('User already exists:', email);
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
+    console.log('Creating new user...');
+    // Create user (password will be hashed by the User model pre-save hook)
     const user = await User.create({
       firstName,
       lastName,
       email,
-      password: hashedPassword,
+      password,
     });
 
+    console.log('User created successfully:', user.email);
     // Generate JWT token
     const token = generateAccessToken(user);
 
@@ -55,22 +58,29 @@ const register = async (req, res) => {
 // Login logic
 const login = async (req, res) => {
   try {
+    console.log('Login attempt with:', req.body);
+    
     // Validate input
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
+    console.log('Email:', email, 'Password length:', password?.length);
 
     // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
+      console.log('User not found for email:', email);
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
+    console.log('User found:', user.email);
     // Verify password
     const isMatch = await user.comparePassword(password);
+    console.log('Password match result:', isMatch);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
