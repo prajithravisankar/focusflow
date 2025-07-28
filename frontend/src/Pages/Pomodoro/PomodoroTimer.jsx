@@ -109,14 +109,33 @@ function PomodoroTimer() {
 
   if (!task) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Task not found</h1>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-red-400 to-orange-400 rounded-full blur-xl animate-float"></div>
+          <div className="absolute bottom-32 right-32 w-24 h-24 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full blur-lg animate-float-delay"></div>
+          <div className="absolute top-1/2 left-1/3 w-16 h-16 bg-gradient-to-br from-yellow-400 to-red-400 rounded-full blur-md animate-float-slow"></div>
+        </div>
+
+        <div className="glass-card p-12 text-center animate-fade-in-up max-w-md mx-4">
+          <div className="mb-6">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold animate-pulse">
+              ⚠
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
+              Task Not Found
+            </h1>
+            <p className="text-gray-600 mb-6">The task you're looking for doesn't exist or has been removed.</p>
+          </div>
+          
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="modern-button bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl group"
           >
-            Back to Dashboard
+            <span className="flex items-center gap-2">
+              ← Back to Dashboard
+              <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
+            </span>
           </button>
         </div>
       </div>
@@ -124,111 +143,203 @@ function PomodoroTimer() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold mb-2">Pomodoro Timer</h1>
-            <h2 className="text-xl text-gray-600 mb-2">{task.title}</h2>
-            {task.description && (
-              <p className="text-gray-500">{task.description}</p>
-            )}
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 opacity-15">
+        <div className="absolute top-32 left-1/4 w-40 h-40 bg-gradient-to-br from-red-400 to-orange-400 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-32 right-1/4 w-32 h-32 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full blur-2xl animate-float-delay"></div>
+        <div className="absolute top-1/2 left-16 w-24 h-24 bg-gradient-to-br from-yellow-400 to-red-400 rounded-full blur-xl animate-float-slow"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-gradient-to-br from-red-300 to-pink-400 rounded-full blur-lg animate-float"></div>
+      </div>
 
-          <div className="text-center mb-6">
-            <div className="flex justify-center gap-2 mb-4">
-              <button
-                onClick={() => switchMode("focus")}
-                className={`px-4 py-2 rounded ${
+      {/* Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="particle particle-1"></div>
+        <div className="particle particle-2"></div>
+        <div className="particle particle-3"></div>
+        <div className="particle particle-4"></div>
+        <div className="particle particle-5"></div>
+      </div>
+
+      <div className="relative z-10 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="glass-card p-8 lg:p-12 animate-fade-in-up">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold animate-pulse shadow-lg">
+                  🍅
+                </div>
+                <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
+                  Pomodoro Timer
+                </h1>
+              </div>
+              
+              <div className="glass-panel p-4 inline-block mb-4">
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">{task.title}</h2>
+                {task.description && (
+                  <p className="text-gray-600">{task.description}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Mode Selector */}
+            <div className="text-center mb-8">
+              <div className="inline-flex bg-white/70 backdrop-blur-sm border border-white/30 rounded-2xl p-2 shadow-lg">
+                <button
+                  onClick={() => switchMode("focus")}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                    sessionType === "focus" 
+                      ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg transform scale-105" 
+                      : "text-gray-700 hover:bg-white/50"
+                  }`}
+                >
+                  🎯 Focus
+                </button>
+                <button
+                  onClick={() => switchMode("break")}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                    sessionType === "break" 
+                      ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg transform scale-105" 
+                      : "text-gray-700 hover:bg-white/50"
+                  }`}
+                >
+                  ☕ Break
+                </button>
+              </div>
+            </div>
+
+            {/* Timer Display */}
+            <div className="text-center mb-8">
+              <div className="relative inline-block">
+                <div className={`w-80 h-80 mx-auto rounded-full flex items-center justify-center relative ${
                   sessionType === "focus" 
-                    ? "bg-blue-500 text-white" 
-                    : "bg-gray-200 text-gray-700"
-                }`}
-              >
-                Focus
-              </button>
-              <button
-                onClick={() => switchMode("break")}
-                className={`px-4 py-2 rounded ${
-                  sessionType === "break" 
-                    ? "bg-green-500 text-white" 
-                    : "bg-gray-200 text-gray-700"
-                }`}
-              >
-                Break
-              </button>
+                    ? "bg-gradient-to-br from-red-100 via-orange-100 to-yellow-100" 
+                    : "bg-gradient-to-br from-green-100 via-emerald-100 to-teal-100"
+                } border-8 ${
+                  sessionType === "focus" 
+                    ? "border-gradient-to-r from-red-300 to-orange-300" 
+                    : "border-gradient-to-r from-green-300 to-emerald-300"
+                } shadow-2xl ${isRunning ? 'animate-pulse-slow' : ''}`}>
+                  
+                  {/* Progress Ring */}
+                  <div className="absolute inset-4 rounded-full border-4 border-gray-200">
+                    <div 
+                      className={`absolute inset-0 rounded-full border-4 border-transparent ${
+                        sessionType === "focus" 
+                          ? "bg-gradient-to-r from-red-400 to-orange-400" 
+                          : "bg-gradient-to-r from-green-400 to-emerald-400"
+                      }`}
+                      style={{
+                        clipPath: `polygon(50% 50%, 50% 0%, ${
+                          50 + 50 * Math.cos((2 * Math.PI * (1 - timeLeft / ((sessionType === "focus" ? focusDuration : breakDuration) * 60))) - Math.PI/2)
+                        }% ${
+                          50 + 50 * Math.sin((2 * Math.PI * (1 - timeLeft / ((sessionType === "focus" ? focusDuration : breakDuration) * 60))) - Math.PI/2)
+                        }%, 50% 50%)`
+                      }}
+                    ></div>
+                  </div>
+                  
+                  <div className="text-center z-10">
+                    <div className={`text-6xl lg:text-7xl font-bold mb-2 ${
+                      sessionType === "focus" 
+                        ? "bg-gradient-to-r from-red-600 to-orange-600" 
+                        : "bg-gradient-to-r from-green-600 to-emerald-600"
+                    } bg-clip-text text-transparent`}>
+                      {formatTime(timeLeft)}
+                    </div>
+                    <div className="text-lg font-semibold text-gray-600 capitalize">
+                      {sessionType} Session
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="text-6xl font-bold mb-6 text-gray-800">
-              {formatTime(timeLeft)}
-            </div>
-
-            <div className="flex justify-center gap-4 mb-6">
+            {/* Control Buttons */}
+            <div className="flex justify-center gap-4 mb-8">
               {!isRunning ? (
                 <button
                   onClick={startTimer}
-                  className="bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600"
+                  className="modern-button bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
                 >
-                  Start
+                  <span className="flex items-center gap-2">
+                    ▶️ Start Timer
+                    <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
+                  </span>
                 </button>
               ) : (
                 <button
                   onClick={pauseTimer}
-                  className="bg-yellow-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-yellow-600"
+                  className="modern-button bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
                 >
-                  Pause
+                  <span className="flex items-center gap-2">
+                    ⏸️ Pause
+                    <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
+                  </span>
                 </button>
               )}
+              
               <button
                 onClick={resetTimer}
-                className="bg-gray-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-gray-600"
+                className="modern-button bg-gradient-to-r from-gray-500 to-slate-600 hover:from-gray-600 hover:to-slate-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
               >
-                Reset
+                <span className="flex items-center gap-2">
+                  🔄 Reset
+                  <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
+                </span>
               </button>
             </div>
-          </div>
 
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-bold mb-4">Settings</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Focus Duration (minutes)
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="60"
-                  value={focusDuration}
-                  onChange={(e) => handleDurationChange("focus", parseInt(e.target.value))}
-                  className="w-full p-2 border rounded"
-                  disabled={isRunning}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Break Duration (minutes)
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="30"
-                  value={breakDuration}
-                  onChange={(e) => handleDurationChange("break", parseInt(e.target.value))}
-                  className="w-full p-2 border rounded"
-                  disabled={isRunning}
-                />
+            {/* Settings Panel */}
+            <div className="glass-panel p-6">
+              <h3 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                ⚙️ Timer Settings
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    🎯 Focus Duration (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={focusDuration}
+                    onChange={(e) => handleDurationChange("focus", parseInt(e.target.value))}
+                    className="modern-input w-full"
+                    disabled={isRunning}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    ☕ Break Duration (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="30"
+                    value={breakDuration}
+                    onChange={(e) => handleDurationChange("break", parseInt(e.target.value))}
+                    className="modern-input w-full"
+                    disabled={isRunning}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="text-center mt-6">
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Back to Dashboard
-            </button>
+            {/* Back Button */}
+            <div className="text-center mt-8">
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="modern-button bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl group"
+              >
+                <span className="flex items-center gap-2">
+                  ← Back to Dashboard
+                  <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
