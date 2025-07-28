@@ -1,19 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import PomodoroTimer from "./pages/Pomodoro/PomodoroTimer";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
 
 function App() {
   return (
-    <div className="flex items-center justify-center h-screen bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-primary">Welcome to FocusFlow</h1>
-        <p className="text-secondary mt-4">A modern, minimalistic app for productivity</p>
-        <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg shadow-lg hover:bg-secondary">
-          Get Started
-        </button>
-      </div>
-    </div>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pomodoro/:taskId"
+            element={
+              <ProtectedRoute>
+                <PomodoroTimer />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 
