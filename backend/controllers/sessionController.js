@@ -42,9 +42,11 @@ const updateSession = async (req, res) => {
 
     // Handle pause/resume functionality
     if (action === 'pause') {
-      session.pausedDuration += pausedDuration || 0;
+      // When pausing, we add the time spent since last resume to pausedDuration
+      session.pausedDuration = (session.pausedDuration || 0) + (pausedDuration || 0);
     } else if (action === 'resume') {
-      session.pausedDuration -= pausedDuration || 0;
+      // Resume doesn't change pausedDuration, it's already tracked
+      // pausedDuration parameter here would be ignored for resume
     }
 
     // Update actual duration

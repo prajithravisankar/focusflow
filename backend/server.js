@@ -39,10 +39,6 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
 
 const PORT = process.env.PORT || 5050;
 const loginRateLimit = rateLimit('login', 50, 15 * 60);

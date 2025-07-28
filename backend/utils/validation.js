@@ -39,9 +39,9 @@ const sessionValidation = [
         throw new Error('Task ID is required for focus sessions');
       }
       if (value) {
-        const task = await Task.findById(value);
+        const task = await Task.findOne({ _id: value, userId: req.user?.id });
         if (!task) {
-          throw new Error('Task does not exist');
+          throw new Error('Task does not exist or you do not have permission to access it');
         }
       }
       return true;

@@ -21,6 +21,11 @@ const taskSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'User ID is required'],
     },
+    totalTimeSpent: {
+      type: Number,
+      default: 0,
+      min: [0, 'Total time spent cannot be negative'],
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

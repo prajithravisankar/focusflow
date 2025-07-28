@@ -21,7 +21,9 @@ const rateLimit = (key, limit, windowInSeconds) => {
       next();
     } catch (error) {
       console.error('Rate limiting error:', error);
-      res.status(500).json({ message: 'Server error' });
+      // If Redis fails, we allow the request to proceed rather than blocking the entire application
+      console.warn('Rate limiting disabled due to Redis connection error');
+      next();
     }
   };
 };
