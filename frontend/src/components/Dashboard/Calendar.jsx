@@ -118,6 +118,7 @@ const Calendar = ({ onDateSelect, selectedDate }) => {
           {calendarData.data.map((dateInfo, index) => {
             const isSelected = selectedDate === dateInfo.date;
             const hasIndicator = dateInfo.hasTasks;
+            const isSelectedToday = isSelected && dateInfo.isToday;
             
             return (
               <div
@@ -126,15 +127,17 @@ const Calendar = ({ onDateSelect, selectedDate }) => {
                 className={`
                   relative cursor-pointer select-none transition-all duration-300 ease-out transform-gpu
                   flex flex-col items-center justify-center min-w-[60px] h-[70px] p-2 rounded-xl
-                  ${isSelected 
-                    ? 'bg-primary-600 text-white shadow-lg scale-105' 
-                    : dateInfo.isToday 
-                      ? 'bg-primary-100 border-2 border-primary-400 text-primary-700 shadow-md' 
-                      : dateInfo.isWeekend 
-                        ? 'bg-gray-50 hover:bg-gray-100 text-gray-600' 
-                        : 'bg-white hover:bg-primary-50 text-gray-700 shadow-sm'
+                  ${isSelectedToday
+                    ? 'bg-primary-600 text-white shadow-lg scale-105 border-2 border-red-500'
+                    : isSelected 
+                      ? 'bg-primary-600 text-white shadow-lg scale-105 border border-primary-700' 
+                      : dateInfo.isToday 
+                        ? 'bg-primary-100 border-2 border-primary-400 text-primary-700 shadow-md' 
+                        : dateInfo.isWeekend 
+                          ? 'bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200' 
+                          : 'bg-white hover:bg-primary-50 text-gray-700 shadow-sm border border-gray-200'
                   }
-                  hover:shadow-lg border ${isSelected ? 'border-primary-700' : 'border-gray-200'}
+                  hover:shadow-lg
                 `}
                 style={getScaleStyle(index)}
                 onMouseEnter={() => setHoveredIndex(index)}
