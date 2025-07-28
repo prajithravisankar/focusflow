@@ -30,7 +30,7 @@ const app = express();
 connectDB();
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your frontend's URL
+  origin: ['http://localhost:3000', 'http://localhost:5173'], // Support both React and Vite dev servers
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 };

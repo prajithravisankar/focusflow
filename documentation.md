@@ -410,3 +410,139 @@
 - **Why**: To provide clear and detailed documentation for developers and testers, ensuring the API is easy to understand and use.
 
 ---
+
+## **Main Todo 5.1: React App Initialization**
+
+### **Sub-todo 5.1.1: Create React App**
+- **What we did**:
+  - Initialized a new React app using Vite:
+    ```bash
+    npm create vite@latest . --template react
+    ```
+  - Installed the project dependencies:
+    ```bash
+    npm install
+    ```
+  - Verified the setup by running the development server:
+    ```bash
+    npm run dev
+    ```
+    - Opened the browser at `http://localhost:5173` to confirm the default Vite React app was working.
+
+---
+
+### **Sub-todo 5.1.2: Install Frontend Dependencies**
+- **What we did**:
+  - Installed the required dependencies:
+    ```bash
+    npm install axios react-router-dom
+    npm install -D tailwindcss postcss autoprefixer
+    ```
+  - Verified the installation by checking the `package.json` file to ensure the dependencies were listed under `dependencies` and `devDependencies`.
+
+---
+
+### **Sub-todo 5.1.3: Configure Tailwind CSS**
+- **What we did**:
+  - Initialized Tailwind CSS:
+    ```bash
+    npx tailwindcss init -p
+    ```
+    - This created the `tailwind.config.js` and `postcss.config.js` files.
+  - Updated `tailwind.config.js` to include the project files and custom colors for the valentine theme:
+    ```javascript
+    // filepath: frontend/tailwind.config.js
+    export default {
+      content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+      theme: {
+        extend: {
+          colors: {
+            primary: '#ec4899', // Soft pink for valentine theme
+            secondary: '#f472b6',
+            background: '#fdf2f8',
+            text: '#1f2937',
+          },
+        },
+      },
+      plugins: [],
+    };
+    ```
+  - Added Tailwind CSS imports to `src/index.css`:
+    ```css
+    /* filepath: frontend/src/index.css */
+    @import "tailwindcss";
+
+    /* Custom styles for valentine theme */
+    body {
+      background-color: #fdf2f8; /* Light pink background */
+      color: #1f2937; /* Neutral text color */
+    }
+    ```
+  - Tested Tailwind CSS by updating `src/App.jsx` with a sample UI:
+    ```jsx
+    function App() {
+      return (
+        <div className="flex items-center justify-center h-screen bg-background">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-primary">Welcome to FocusFlow</h1>
+            <p className="text-secondary mt-4">A modern, minimalistic app for productivity</p>
+            <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg shadow-lg hover:bg-secondary">
+              Get Started
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    export default App;
+    ```
+  - Verified the setup by running the development server and confirming the styles were applied.
+
+---
+
+### **Sub-todo 5.1.4: Set Up Environment Configuration**
+- **What we did**:
+  - Created a `.env` file in the root of the `frontend` folder:
+    ```env
+    VITE_API_URL=http://localhost:5050/api
+    ```
+  - Created an Axios service in `src/services/api.js`:
+    ```javascript
+    import axios from 'axios';
+
+    const api = axios.create({
+      baseURL: import.meta.env.VITE_API_URL, // Use the environment variable for the base URL
+    });
+
+    export default api;
+    ```
+  - Tested the configuration by making a sample API call in `src/Api.jsx`:
+    ```jsx
+    import { useEffect } from 'react';
+    import api from './services/api';
+
+    function App() {
+      useEffect(() => {
+        api.get('/test')
+          .then((response) => console.log(response.data))
+          .catch((error) => console.error('Error:', error));
+      }, []);
+
+      return (
+        <div className="flex items-center justify-center h-screen bg-background">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-primary">Welcome to FocusFlow</h1>
+            <p className="text-secondary mt-4">A modern, minimalistic app for productivity</p>
+            <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg shadow-lg hover:bg-secondary">
+              Get Started
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    export default App;
+    ```
+  - Verified the API call by checking the browser console for the response or error message.
+
+---
