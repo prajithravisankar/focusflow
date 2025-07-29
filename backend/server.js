@@ -30,7 +30,14 @@ const app = express();
 connectDB();
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'], // Support multiple dev servers
+  origin: [
+    'http://localhost:3000', 
+    'http://localhost:5173', 
+    'http://localhost:5174', 
+    'http://localhost:5175', 
+    'http://localhost:5176',
+    'https://focusflow-kohl.vercel.app'  // Add your Vercel URL
+  ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 };
