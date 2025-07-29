@@ -12,10 +12,8 @@ const getApiUrl = () => {
     return 'http://localhost:5050/api';
   }
   
-  // In production, you can either:
-  // 1. Use your Railway backend URL (replace with your actual URL)
-  // 2. Or use relative path '/api' if backend is deployed to same domain
-  return 'https://reliable-kindness-production.up.railway.app/api';
+  // In production, use the Vercel backend
+  return 'https://focusflow-backend.vercel.app/api';
 };
 
 const api = axios.create({
