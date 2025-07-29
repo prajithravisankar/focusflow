@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Auth/Login";
-import Register from "./components/Auth/Register";
-import Dashboard from "./pages/Dashboard";
+import Login from "../src/Pages/Auth/Login";
+import Register from "../src/Pages/Auth/Register";
+import Dashboard from "../src/Pages/Dashboard/Dashboard";
 import Analytics from "../src/Pages/Analytics";
 import PomodoroTimer from "./Pages/Pomodoro/PomodoroTimer";
 import ProtectedRoute from "./components/ProtectedRoute";
