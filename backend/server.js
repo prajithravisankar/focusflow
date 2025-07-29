@@ -99,6 +99,19 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// Debug route to test token validation
+app.get('/api/debug/token', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader ? authHeader.split(' ')[1] : null;
+  
+  res.json({
+    hasAuthHeader: !!authHeader,
+    headerValue: authHeader ? 'Bearer [token]' : null,
+    tokenLength: token ? token.length : 0,
+    jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING'
+  });
+});
+
 // Root route
 app.get('/', (req, res) => {
   res.json({ message: 'FocusFlow Backend API', status: 'OK' });
