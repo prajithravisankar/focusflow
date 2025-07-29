@@ -57,7 +57,9 @@ const corsOptions = {
         'http://localhost:5175', 
         'http://localhost:5176'
       ], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
   credentials: true,
 };
 
@@ -65,6 +67,9 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 const PORT = process.env.PORT || 5050;
 const loginRateLimit = rateLimit('login', 50, 15 * 60);
@@ -108,7 +113,20 @@ app.get('/api/debug/token', (req, res) => {
     hasAuthHeader: !!authHeader,
     headerValue: authHeader ? 'Bearer [token]' : null,
     tokenLength: token ? token.length : 0,
-    jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING'
+    jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING',
+    allHeaders: Object.keys(req.headers),
+    corsHeaders: {
+      origin: req.headers.origin,
+      method: req.method
+    }
+  });
+});
+
+// Debug route that requires auth
+app.get('/api/debug/auth-test', authMiddleware, (req, res) => {
+  res.json({
+    message: 'Authentication successful!',
+    user: req.user
   });
 });
 
