@@ -92,7 +92,13 @@ app.get('/api/auth/profile', authMiddleware, authController.profile);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/sessions', sessionRoutes);
 
-
-app.listen(PORT, () => {
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5050;
+  app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-});
+  });
+}
+
+// Export for Vercel
+module.exports = app;
