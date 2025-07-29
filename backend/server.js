@@ -34,7 +34,8 @@ const corsOptions = {
     ? [
         'https://focusflow-kohl.vercel.app',
         'https://focusflow.vercel.app',
-        /^https:\/\/focusflow.*\.vercel\.app$/
+        /^https:\/\/focusflow.*\.vercel\.app$/,
+        /^https:\/\/.*\.vercel\.app$/
       ]
     : [
         'http://localhost:3000', 

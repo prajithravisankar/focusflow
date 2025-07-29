@@ -15,7 +15,7 @@ const getApiUrl = () => {
   // In production, you can either:
   // 1. Use your Railway backend URL (replace with your actual URL)
   // 2. Or use relative path '/api' if backend is deployed to same domain
-  return 'https://your-railway-app-name.railway.app/api'; // Replace with your Railway URL
+  return 'https://reliable-kindness-production.up.railway.app/api';
 };
 
 const api = axios.create({
