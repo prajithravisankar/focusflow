@@ -2,7 +2,7 @@
 
 > **CodeCrunch SummerCodeX 2025 Submission**
 >
-> deployment link: https://focusflow-kohl.vercel.app/
+**deployment not working for task creation deleting**
 
 FocusFlow is a personal productivity by seamlessly integrating task management with focused work sessions. Unlike traditional to-do apps, FocusFlow bridges the gap between planning and execution by connecting each task directly to time-tracked Pomodoro sessions.
 
