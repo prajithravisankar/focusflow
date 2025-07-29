@@ -81,8 +81,8 @@ function Dashboard() {
       title: formData.title,
       description: formData.description,
       priority: formData.priority,
-      scheduledDate: formData.scheduledDate || null,
-      dueDate: formData.dueDate || null
+      scheduledDate: formData.scheduledDate ? new Date(formData.scheduledDate).toISOString() : null,
+      dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null
     };
 
     const success = editingTask 
