@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // These should ALL say ./components/
 import Login from './components/Auth/Login'
 import Register from './components/Auth/Register'
-import Dashboard from './components/Dashboard'
-import Analytics from './components/Analytics'
-import PomodoroTimer from './components/Pomodoro/PomodoroTimer'
+import Dashboard from './pages/Dashboard'
+import Analytics from './pages/Analytics'
+import PomodoroTimer from './pages/Pomodoro/PomodoroTimer'
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 
