@@ -26,8 +26,21 @@ const authMiddleware = require('./middleware/auth');
 
 const app = express();
 
-// Connect to Database
-connectDB();
+// Middleware to ensure database connection for serverless
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
+
+// Connect to Database (for local development)
+if (process.env.NODE_ENV !== 'production') {
+  connectDB().catch(console.error);
+}
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
@@ -80,6 +93,16 @@ app.post('/api/auth/register', registerRateLimit, registerValidation, validate, 
 app.post('/api/auth/login', loginRateLimit, loginValidation, validate ,authController.login);
 
 app.get('/api/auth/profile', authMiddleware, authController.profile);
+
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Server is running' });
+});
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'FocusFlow Backend API', status: 'OK' });
+});
 
 // app.post('/api/tasks', authMiddleware, taskValidation, validate, taskController.createTask);
 
