@@ -1,7 +1,24 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/database');
+
+// Import auth components
+const authController = require('./controllers/authController');
+const authMiddleware = require('./middleware/auth');
+const { registerValidation, validate, loginValidation } = require('./utils/validation');
 
 const app = express();
+
+// Database connection middleware for serverless
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
 
 // Basic CORS
 app.use(cors({
@@ -31,6 +48,21 @@ app.get('/api/debug/token', (req, res) => {
     environment: process.env.NODE_ENV,
     mongoUri: process.env.MONGODB_URI ? 'SET' : 'MISSING',
     jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING'
+  });
+});
+
+// Authentication routes
+app.post('/api/auth/register', registerValidation, validate, authController.register);
+app.post('/api/auth/login', loginValidation, validate, authController.login);
+
+// Protected route test
+app.get('/api/auth/me', authMiddleware, (req, res) => {
+  res.json({ 
+    message: 'Auth test successful', 
+    user: { 
+      id: req.user.id, 
+      email: req.user.email 
+    } 
   });
 });
 
