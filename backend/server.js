@@ -43,28 +43,17 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://focusflow-kohl.vercel.app',
-        'https://focusflow.vercel.app',
-        /^https:\/\/focusflow.*\.vercel\.app$/,
-        /^https:\/\/.*\.vercel\.app$/
-      ]
-    : [
-        'http://localhost:3000', 
-        'http://localhost:5173', 
-        'http://localhost:5174', 
-        'http://localhost:5175', 
-        'http://localhost:5176'
-      ], 
+  origin: true, // Allow all origins for now
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Authorization'],
   credentials: true,
 };
 
 app.use(express.json());
-app.use(helmet());
+// Temporarily disable helmet to debug crash
+// app.use(helmet({
+//   crossOriginResourcePolicy: { policy: "cross-origin" }
+// }));
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
 
