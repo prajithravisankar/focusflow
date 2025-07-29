@@ -1,8 +1,25 @@
 import axios from "axios";
 
+// Configure API base URL
+const getApiUrl = () => {
+  // If VITE_API_URL is set, use it
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // If in development, use localhost
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5050/api';
+  }
+  
+  // In production, you can either:
+  // 1. Use your Railway backend URL (replace with your actual URL)
+  // 2. Or use relative path '/api' if backend is deployed to same domain
+  return 'https://your-railway-app-name.railway.app/api'; // Replace with your Railway URL
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 
-           (import.meta.env.DEV ? 'http://localhost:5050/api' : '/api'),
+  baseURL: getApiUrl(),
 });
 
 // Add request interceptor to include JWT token
