@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from './pages/Auth/Login';
-import Register from "./pages/Auth/Register";
+import Register from './components/Auth/Register'
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Analytics from "./pages/Analytics";
 import PomodoroTimer from "./pages/Pomodoro/PomodoroTimer";
