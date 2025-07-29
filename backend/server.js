@@ -3,12 +3,12 @@ dotenv.config();
 
 const express = require('express');
 const connectDB = require('./config/database');
-const { Redis } = require('@upstash/redis');
+// const { Redis } = require('@upstash/redis'); // Comment out Redis temporarily
 const { generateAccessToken } = require('./utils/jwt');
-const rateLimit = require('./middleware/rateLimit');
-const helmet = require('helmet');
+// const rateLimit = require('./middleware/rateLimit'); // Comment out rate limit temporarily
+// const helmet = require('helmet'); // Already commented out
 const cors = require('cors');
-const morgan = require('morgan');
+// const morgan = require('morgan'); // Comment out morgan temporarily
 
 // routes
 const taskRoutes = require('./routes/tasks');
@@ -42,35 +42,32 @@ if (process.env.NODE_ENV !== 'production') {
   connectDB().catch(console.error);
 }
 
+// Simple CORS configuration
 const corsOptions = {
-  origin: true, // Allow all origins for now
+  origin: true, // Allow all origins for debugging
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
 app.use(express.json());
-// Temporarily disable helmet to debug crash
-// app.use(helmet({
-//   crossOriginResourcePolicy: { policy: "cross-origin" }
-// }));
 app.use(cors(corsOptions));
-app.use(morgan('dev'));
+// app.use(morgan('dev')); // Commented out
 
 // Handle preflight requests
 app.options('*', cors(corsOptions));
 
 const PORT = process.env.PORT || 5050;
-const loginRateLimit = rateLimit('login', 50, 15 * 60);
-const registerRateLimit = rateLimit('register', 30, 60 * 60);
+// const loginRateLimit = rateLimit('login', 50, 15 * 60); // Commented out
+// const registerRateLimit = rateLimit('register', 30, 60 * 60); // Commented out
 
 
-// Route to generate a token (for testing)
-app.post('/api/test-token', (req, res) => {
-  const user = { _id: '12345', email: 'test@example.com' }; // Mock user data
-  const token = generateAccessToken(user);
-  res.status(200).json({ token });
-});
+// Route to generate a token (for testing) - Commented out for debugging
+// app.post('/api/test-token', (req, res) => {
+//   const user = { _id: '12345', email: 'test@example.com' }; // Mock user data
+//   const token = generateAccessToken(user);
+//   res.status(200).json({ token });
+// });
 
 // Protected route to test middleware
 app.get('/api/protected', authMiddleware, (req, res) => {
@@ -82,9 +79,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Server error occurred!' });
 });
 
-app.post('/api/auth/register', registerRateLimit, registerValidation, validate, authController.register);
+app.post('/api/auth/register', registerValidation, validate, authController.register);
 
-app.post('/api/auth/login', loginRateLimit, loginValidation, validate ,authController.login);
+app.post('/api/auth/login', loginValidation, validate, authController.login);
 
 app.get('/api/auth/profile', authMiddleware, authController.profile);
 
