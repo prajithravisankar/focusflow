@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// Configure API base URL
+// Configure API base URL - Environment controlled
 const getApiUrl = () => {
-  // If VITE_API_URL is set, use it
+  // If VITE_API_URL is set in environment, use it (this will be our production setup)
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
@@ -12,8 +12,8 @@ const getApiUrl = () => {
     return 'http://localhost:5050/api';
   }
   
-  // In production, use the Vercel backend
-  return 'https://focusflow-backend.vercel.app/api';
+  // Fallback (should not reach here in production)
+  return '/api';
 };
 
 const api = axios.create({
