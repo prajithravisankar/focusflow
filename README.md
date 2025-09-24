@@ -1,4 +1,4 @@
-# 🚀 FocusFlow - Task-Centered Pomodoro Productivity Platform
+# 🚀 FocusFlow - Task-Centered Pomodoro Productivity Platform (UPDATE: WON 1ST PLACE IN CODECRUNCH CODEX HACKATHON: https://devpost.com/software/focusflow-gz9buj)
 
 > **CodeCrunch SummerCodeX 2025 Submission**
 > Hi Code crunch team! I hope you are doing well. I’ve sent an email as well, but just wanted to clarify here too. For my CodeCrunch submission (FocusFlow), I faced a power outage in India during the final deployment — the build crashed, and I couldn’t get it live in time. The current link (https://focusflow-kohl.vercel.app/) is not working. For judging, please refer to the demo video I made from running my project locally and this commit, which was my last one before the deadline:
